@@ -77,11 +77,9 @@ const SentinelLinksViewer = () => {
 
   // Extract links from Notion content
   const extractLinks = useCallback((notionContent) => {
-    const linkPattern = /<page url="{{([^}]+)}}">(.*?)<\/page>/g;
     const extractedLinks = [];
     const categoryMap = {};
 
-    let match;
     let currentCategory = 'General';
 
     const lines = notionContent.split('\n');
