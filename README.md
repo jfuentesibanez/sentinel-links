@@ -34,19 +34,34 @@ npm install
    - Copy `.env.example` to `.env`
    - Add your Anthropic API key to enable Notion sync:
    ```
-   VITE_ANTHROPIC_API_KEY=your_api_key_here
+   ANTHROPIC_API_KEY=your_api_key_here
+   VITE_NOTION_PAGE_ID=your_notion_page_id
    ```
    - (Optional) Update the Notion Page ID if needed
 
 ## Running the App
 
-Start the development server:
+### Full Stack (Frontend + Backend)
+
+To run both the frontend and backend servers together (required for Notion sync):
+
+```bash
+npm run dev:full
+```
+
+This starts:
+- Frontend (React + Vite) at `http://localhost:5173`
+- Backend (Express API) at `http://localhost:3001`
+
+### Frontend Only
+
+If you just want to use the app without Notion sync:
 
 ```bash
 npm run dev
 ```
 
-The app will open at `http://localhost:5173` (or the next available port).
+The app will open at `http://localhost:5173` - you can still add links manually!
 
 ## Building for Production
 

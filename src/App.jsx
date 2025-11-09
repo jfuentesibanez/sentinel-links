@@ -4,7 +4,7 @@ import './App.css';
 
 // Constants
 const NOTION_PAGE_ID = import.meta.env.VITE_NOTION_PAGE_ID || '11f46694-4091-8028-9320-e734a64f47c2';
-const ANTHROPIC_API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY || '';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
 const STORAGE_KEY = 'sentinel_links_data';
 
 const SAMPLE_DATA = {
@@ -119,45 +119,32 @@ const SentinelLinksViewer = () => {
     return { links: extractedLinks, categories: categoryMap };
   }, []);
 
-  // Sync with Notion via Anthropic API
+  // Sync with Notion via backend API
   const syncWithNotion = useCallback(async () => {
-    if (!ANTHROPIC_API_KEY) {
-      setError('API key not configured. Please set VITE_ANTHROPIC_API_KEY in your .env file.');
-      return;
-    }
-
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const response = await fetch(`${BACKEND_URL}/api/sync-notion`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': ANTHROPIC_API_KEY,
-          'anthropic-version': '2023-06-01'
         },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 4000,
-          messages: [
-            {
-              role: 'user',
-              content: `Using the Notion fetch tool, get the full content of page ID: ${NOTION_PAGE_ID}. Return ONLY the raw content text from inside the <content> tags, nothing else.`
-            }
-          ]
+          notionPageId: NOTION_PAGE_ID
         })
       });
 
       if (!response.ok) {
-        throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Backend error: ${response.status}`);
       }
 
       const data = await response.json();
       const content = data.content?.[0]?.text;
 
       if (!content) {
-        throw new Error('No content received from API');
+        throw new Error('No content received from backend');
       }
 
       const { links: notionLinks, categories: notionCategories } = extractLinks(content);
