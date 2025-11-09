@@ -141,13 +141,13 @@ const SentinelLinksViewer = () => {
       }
 
       const data = await response.json();
-      const content = data.content?.[0]?.text;
 
-      if (!content) {
-        throw new Error('No content received from backend');
+      if (!data.links || !data.categories) {
+        throw new Error('Invalid response from backend');
       }
 
-      const { links: notionLinks, categories: notionCategories } = extractLinks(content);
+      const notionLinks = data.links;
+      const notionCategories = data.categories;
 
       // Merge with existing local-only links
       const localLinks = links.filter(link => link.source !== 'notion');

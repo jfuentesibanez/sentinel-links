@@ -30,14 +30,16 @@ cd sentinel-links
 npm install
 ```
 
-3. Set up your environment variables:
-   - Copy `.env.example` to `.env`
-   - Add your Anthropic API key to enable Notion sync:
-   ```
-   ANTHROPIC_API_KEY=your_api_key_here
-   VITE_NOTION_PAGE_ID=your_notion_page_id
-   ```
-   - (Optional) Update the Notion Page ID if needed
+3. Set up Notion integration (to enable syncing):
+   - See **[NOTION_SETUP.md](./NOTION_SETUP.md)** for detailed instructions
+   - Quick start:
+     1. Create a Notion integration at https://www.notion.so/my-integrations
+     2. Share your Notion page with the integration
+     3. Copy the integration token to `.env`:
+        ```
+        NOTION_API_KEY=secret_your_token_here
+        VITE_NOTION_PAGE_ID=your_page_id
+        ```
 
 ## Running the App
 
@@ -94,10 +96,13 @@ When you first open the app, it will load with sample data to demonstrate the in
 
 ### Syncing with Notion
 
-1. Make sure you have set your `VITE_ANTHROPIC_API_KEY` in the `.env` file
-2. Click the **"Sync Notion"** button
-3. The app will fetch links from your Notion database and merge them with your local links
-4. Local links are preserved during sync
+1. Complete the Notion integration setup (see [NOTION_SETUP.md](./NOTION_SETUP.md))
+2. Make sure both servers are running (`npm run dev:full`)
+3. Click the **"Sync Notion"** button in the app
+4. All links from your Notion page will be imported and categorized
+5. Local links are preserved during sync
+
+**Note**: The backend must be running for Notion sync to work!
 
 ### Managing Links
 
